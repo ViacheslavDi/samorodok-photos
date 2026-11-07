@@ -1,0 +1,21 @@
+name: wbcheck
+on:
+  push:
+    branches: [claude/project-thread-w1ubct]
+    paths: ['wbcheck/cards.json','wbcheck/run.py','.github/workflows/wbcheck.yml']
+permissions:
+  contents: write
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install pillow numpy
+      - run: python wbcheck/run.py
+      - run: |
+          git config user.name wbcheck-bot
+          git config user.email wbcheck-bot@users.noreply.github.com
+          git add wbcheck/out
+          git commit -m "wbcheck: метрики и листы фото старых карточек WB" || true
+          git push
